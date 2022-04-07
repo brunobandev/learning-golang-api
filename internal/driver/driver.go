@@ -20,7 +20,7 @@ const maxOpenDbConn = 5
 const maxIdleDbConn = 5
 const maxDbLifeTime = 5 * time.Minute
 
-func ConnectPostgress(dns string) (*DB, error) {
+func ConnectPostgres(dns string) (*DB, error) {
 	d, err := sql.Open("pgx", dns)
 	if err != nil {
 		return nil, err
@@ -30,19 +30,23 @@ func ConnectPostgress(dns string) (*DB, error) {
 	d.SetMaxIdleConns(maxIdleDbConn)
 	d.SetConnMaxLifetime(maxDbLifeTime)
 
-	err = testDB(err, d)
-
-	dbConn.SQL = d
-	return dbConn, err
-}
-
-func testDB(err error, d *sql.DB) error {
-	err = d.Ping()
+	err = testDB(d)
 	if err != nil {
-		fmt.Print("Error!", err)
-	} else {
-		fmt.Print("*** Pinged database successfully! ***")
+		return nil, err
 	}
 
-	return err
+	dbConn.SQL = d
+	return dbConn, nil
+}
+
+func testDB(d *sql.DB) error {
+	err := d.Ping()
+	if err != nil {
+		fmt.Print("Error!", err)
+		return err
+	}
+
+	fmt.Println("*** Pinged database successfully! ***")
+
+	return nil
 }
