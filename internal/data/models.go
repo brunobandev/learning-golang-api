@@ -201,7 +201,6 @@ func (u *User) Insert(user User) (int, error) {
 	}
 
 	return newID, nil
-
 }
 
 func (u *User) ResetPassword(password string) error {
@@ -396,4 +395,22 @@ func (t *Token) DeleteByToken(plainText string) error {
 	}
 
 	return nil
+}
+
+func (t *Token) ValidToken(plainText string) (bool, error) {
+	token, err := t.GetByToken(plainText)
+	if err != nil {
+		return false, errors.New("no matching token found")
+	}
+
+	_, err = t.GetUserForToken(*token)
+	if err != nil {
+		return false, errors.New("no matching user found")
+	}
+
+	if token.Expiry.Before(time.Now()) {
+		return false, errors.New("expired token")
+	}
+
+	return true, nil
 }
