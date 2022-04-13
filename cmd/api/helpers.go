@@ -63,7 +63,7 @@ func (app *application) errorJSON(w http.ResponseWriter, err error, status ...in
 	case strings.Contains(err.Error(), "SQLSTATE 22001"):
 		customErr = errors.New("the value you are trying to insert is too large")
 		statusCode = http.StatusForbidden
-	case strings.Contains(err.Error(), "SQLSTATE 23403"):
+	case strings.Contains(err.Error(), "SQLSTATE 23503"):
 		customErr = errors.New("foreign key violation")
 		statusCode = http.StatusForbidden
 	default:

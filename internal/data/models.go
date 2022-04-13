@@ -197,7 +197,7 @@ func (u *User) Insert(user User) (int, error) {
 	).Scan(&newID)
 
 	if err != nil {
-		return 0, nil
+		return 0, err
 	}
 
 	return newID, nil
