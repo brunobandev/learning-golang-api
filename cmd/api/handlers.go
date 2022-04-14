@@ -74,3 +74,28 @@ func (app *application) Login(w http.ResponseWriter, r *http.Request) {
 		app.errorLog.Println(err)
 	}
 }
+
+func (app *application) Logout(w http.ResponseWriter, r *http.Request) {
+	var requestPayload struct {
+		Token string `json:"token"`
+	}
+
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, errors.New("invalid json"))
+		return
+	}
+
+	err = app.models.Token.DeleteByToken(requestPayload.Token)
+	if err != nil {
+		app.errorJSON(w, errors.New("invalid json"))
+		return
+	}
+
+	payload := jsonResponse{
+		Error:   false,
+		Message: "logged out",
+	}
+
+	_ = app.writeJSON(w, http.StatusOK, payload)
+}
