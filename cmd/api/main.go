@@ -67,3 +67,7 @@ func (app *application) serve() error {
 
 	return srv.ListenAndServe()
 }
+
+func Index[T comparable](s []T, x T) {
+
+}
