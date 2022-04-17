@@ -23,12 +23,16 @@ func (app *application) routes() http.Handler {
 	mux.Post("/users/login", app.Login)
 	mux.Post("/users/logout", app.Logout)
 
+	mux.Post("/validate-token", app.ValidateToken)
+
 	mux.Route("/admin", func(mux chi.Router) {
 		mux.Use(app.AuthTokenMiddleware)
 
 		mux.Post("/users", app.AllUsers)
 		mux.Post("/users/save", app.EditUser)
 		mux.Post("/users/get/{id}", app.GetUser)
+		mux.Post("/users/delete", app.DeleteUser)
+		mux.Post("/log-user-out/{id}", app.LogUserOutAndSetInactive)
 	})
 
 	return mux
